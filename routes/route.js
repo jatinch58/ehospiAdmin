@@ -1,0 +1,13 @@
+const express = require("express");
+const router = express.Router();
+const admin = require("./admin");
+const subAdmin = require("./subAdmin");
+const hospitalAdmin = require("./hospitalAdmin");
+const hospitalSubAdmin = require("./hospitalSubAdmin");
+const hospitalSignup = require("./hospitalSignup");
+router.use(hospitalSignup);
+router.use(admin);
+router.use(subAdmin);
+router.use(hospitalAdmin);
+router.use(hospitalSubAdmin);
+module.exports = router;
