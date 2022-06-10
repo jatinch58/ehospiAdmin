@@ -716,8 +716,7 @@ exports.getInsurance = async (req, res) => {
       });
 
       let b = await adminInsurancedb.find({
-        insurance: { $nin: am.insurance },
-        tpa: { $nin: am.tpa },
+        $or: [{ insurance: { $nin: am.insurance } }, { tpa: { $nin: am.tpa } }],
       });
       res.status(200).send(b);
     } else {
