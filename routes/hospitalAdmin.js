@@ -65,6 +65,12 @@ router.get(
   isHospitalAdmin,
   hospitalAdmin.getFullAmenities
 );
+router.put(
+  "/hospitalAdmin/deleteAmenities/:id",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.deleteAmenities
+);
 router.get(
   "/hospitalAdmin/getFacilities",
   auth.verifyToken,
@@ -88,6 +94,12 @@ router.put(
   auth.verifyToken,
   isHospitalAdmin,
   hospitalAdmin.updateFacilityPrice
+);
+router.put(
+  "/hospitalAdmin/deleteFacilities/:id",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.deleteFacilities
 );
 router.get(
   "/hospitalAdmin/getServices",
@@ -126,7 +138,12 @@ router.get(
   isHospitalAdmin,
   hospitalAdmin.getBedTypes
 );
-
+router.put(
+  "/hospitalAdmin/deleteBedTypes/:id",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.deleteBedTypes
+);
 router.get(
   "/hospitalAdmin/getInsurance",
   auth.verifyToken,

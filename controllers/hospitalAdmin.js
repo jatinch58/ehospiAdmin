@@ -413,6 +413,27 @@ exports.updateAmenityPrice = async (req, res) => {
     res.status(500).send(e);
   }
 };
+exports.deleteAmenities = async (req, res) => {
+  try {
+    const a = await hospitalAmenitiesdb.findOneAndUpdate(
+      {
+        hospitalCode: req.hospitalCode,
+      },
+      {
+        $pull: {
+          details: { _id: req.params.id },
+        },
+      }
+    );
+    if (a) {
+      res.status(200).send({ message: "Deleted sucessfully" });
+    } else {
+      res.status(404).send({ message: "No amenitiy found of this id" });
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
 exports.getFacilities = async (req, res) => {
   try {
     const a = await hospitalFacilitiesdb.findOne({
@@ -519,6 +540,27 @@ exports.updateFacilityPrice = async (req, res) => {
     }
   } catch (e) {
     res.status(500).send(e);
+  }
+};
+exports.deleteFacilities = async (req, res) => {
+  try {
+    const a = await hospitalFacilitiesdb.findOneAndUpdate(
+      {
+        hospitalCode: req.hospitalCode,
+      },
+      {
+        $pull: {
+          details: { _id: req.params.id },
+        },
+      }
+    );
+    if (a) {
+      res.status(200).send({ message: "Deleted sucessfully" });
+    } else {
+      res.status(404).send({ message: "No facility found of this id" });
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.name });
   }
 };
 exports.getServices = async (req, res) => {
@@ -702,7 +744,23 @@ exports.getBedTypes = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-
+exports.deleteBedTypes = async (req, res) => {
+  try {
+    const del = await myBedTypesdb.findOneAndUpdate(
+      { hospitalCode: req.hospitalCode },
+      {
+        $pull: { beds: { _id: req.params.id } },
+      }
+    );
+    if (del) {
+      res.status(200).send({ message: "Deleted sucessfully" });
+    } else {
+      res.status(404).send({ message: "Id not found" });
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
 exports.getInsurance = async (req, res) => {
   try {
     const a = await hospitalInsurancedb.findOne({
@@ -769,7 +827,6 @@ exports.addInsurance = async (req, res) => {
     res.status(500).send({ message: e });
   }
 };
-
 exports.getFullInsurance = async (req, res) => {
   try {
     const a = await hospitalInsurancedb.findOne({
