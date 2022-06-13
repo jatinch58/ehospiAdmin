@@ -453,13 +453,13 @@ exports.adminRejectedBookingRequests = async (req, res) => {
 };
 exports.adminRejectedPendingBookingRequests = async (req, res) => {
   try {
-    const allHospitalAcceptedRequests = await hospitalForm.findOneAndUpdate(
+    const allHospitalAcceptedRequests = await signupHospitaldb.findOneAndUpdate(
       {
         hospitalCode: req.body.hospitalCode,
-        bookingStatus: "rejected",
+        status: "rejected",
       },
       {
-        bookingStatus: "pending",
+        status: "pending",
       }
     );
     res.status(200).send(allHospitalAcceptedRequests);
