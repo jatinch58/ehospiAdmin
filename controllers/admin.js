@@ -451,6 +451,22 @@ exports.adminRejectedBookingRequests = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
+exports.adminRejectedPendingBookingRequests = async (req, res) => {
+  try {
+    const allHospitalAcceptedRequests = await hospitalForm.findOneAndUpdate(
+      {
+        bookingId: req.body.bookingId,
+        bookingStatus: "rejected",
+      },
+      {
+        bookingStatus: "pending",
+      }
+    );
+    res.status(200).send(allHospitalAcceptedRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
 exports.adminSignupHosAllRequests = async (req, res) => {
   try {
     const allHospitalRequests = await signupHospitaldb.find(

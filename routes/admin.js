@@ -102,7 +102,12 @@ router.get(
   isAdmin,
   admin.adminRejectedBookingRequests
 );
-
+router.put(
+  "/admin/updateRejectedRequests",
+  auth.verifyToken,
+  isAdmin,
+  admin.adminRejectedPendingBookingRequests
+);
 router.get("/admin/getAllUsers", auth.verifyToken, isAdmin, admin.showAllUsers);
 router.get(
   "/admin/getAllHospitalBookings",
