@@ -455,7 +455,7 @@ exports.adminRejectedPendingBookingRequests = async (req, res) => {
   try {
     const allHospitalAcceptedRequests = await hospitalForm.findOneAndUpdate(
       {
-        bookingId: req.body.bookingId,
+        hospitalCode: req.body.hospitalCode,
         bookingStatus: "rejected",
       },
       {
