@@ -1055,6 +1055,25 @@ exports.updateAcceptRequests = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
+exports.rejectToPending = async (req, res) => {
+  try {
+    const allHospitalRejectedRequests = await hospitalForm.findOneAndUpdate(
+      {
+        hospitalCode: req.hospitalCode,
+        bookingStatus: "rejected",
+        bookingId: req.body.bookingId,
+      },
+      { bookingStatus: "pending" }
+    );
+    if (allHospitalRejectedRequests) {
+      res.status(200).send({ message: "Sent to pending request sucessfully" });
+    } else {
+      res.status(404).send({ message: "given id not found" });
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
 exports.completeBookings = async (req, res) => {
   try {
     const { body } = req;

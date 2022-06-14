@@ -101,6 +101,12 @@ router.put(
   isHospitalAdmin,
   hospitalAdmin.deleteFacilities
 );
+router.put(
+  "/hospitalAdmin/rejectToPending",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.rejectToPending
+);
 router.get(
   "/hospitalAdmin/getServices",
   auth.verifyToken,
