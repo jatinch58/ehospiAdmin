@@ -921,3 +921,37 @@ exports.getHospital = async (req, res) => {
     res.status(500).send({ message: err.name });
   }
 };
+
+////////////////////////////////////////////////
+// exports.signup = async (req, res) => {
+//   try {
+//     const { body } = req;
+//     const adminSchema = Joi.object()
+//       .keys({
+//         uid: Joi.string().required(),
+//         password: Joi.string().required(),
+//       })
+//       .required();
+//     const result = adminSchema.validate(body);
+//     if (result.error) {
+//       res.status(400).send({ message: result.error.details[0].message });
+//     } else {
+//       const salt = await bcrypt.genSalt(10);
+//       hashpassword = await bcrypt.hash(req.body.password, salt);
+//       const createAdmin = new admindb({
+//         uid: req.body.uid,
+//         password: hashpassword,
+//       });
+//       createAdmin
+//         .save()
+//         .then(() => {
+//           res.status(200).send({ message: "Added admin sucessfully" });
+//         })
+//         .catch(() => {
+//           res.status(500).send({ message: "Something bad happened" });
+//         });
+//     }
+//   } catch (e) {
+//     res.status(500).send({ message: e.name });
+//   }
+// };

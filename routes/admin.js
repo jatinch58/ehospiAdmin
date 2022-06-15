@@ -4,6 +4,7 @@ const auth = require("../middlewares/auth");
 const { isAdmin } = require("../middlewares/isAdmin");
 const admin = require("../controllers/admin");
 router.post("/admin/login", admin.adminLogin);
+// router.post("/admin/signup", admin.signup);
 router.get("/isAdmin", auth.verifyToken, isAdmin, admin.isAdmin);
 router.put(
   "/admin/updateProfile",
