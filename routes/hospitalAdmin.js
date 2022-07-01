@@ -247,5 +247,22 @@ router.get(
   isHospitalAdmin,
   hospitalAdmin.getCompletedBooking
 );
-
+router.get(
+  "/hospitalAdmin/getAllPatients",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.getTotalPatients
+);
+router.get(
+  "/hospitalAdmin/getAllBeds",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.getTotalBeds
+);
+router.get(
+  "/hospitalAdmin/getIncome",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.totalIncome
+);
 module.exports = router;

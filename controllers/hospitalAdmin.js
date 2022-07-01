@@ -45,7 +45,12 @@ exports.hospitalAdminLogin = async (req, res) => {
               expiresIn: "24h",
             }
           );
-          res.status(200).send({ token: token });
+          const hospitalName = await hospitaldb.findOne({
+            hospitalCode: user.hospitalCode,
+          });
+          res
+            .status(200)
+            .send({ token: token, hospitalName: hospitalName.hospitalName });
         } else {
           res.status(401).send("Invalid password");
         }
@@ -1133,6 +1138,37 @@ exports.getCompletedBooking = async (req, res) => {
       bookingStatus: "completed",
     });
     res.status(200).send(allHospitalRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.getTotalPatients = async (req, res) => {
+  try {
+    const totalPatients = await hospitalForm
+      .find({ hospitalCode: req.hospitalCode })
+      .count();
+    res.status(200).send({ count: totalPatients });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.getTotalBeds = async (req, res) => {
+  try {
+    const totalBeds = await hospitaldb.findOne({
+      hospitalCode: req.hospitalCode,
+    });
+    res.status(200).send({ beds: totalBeds.numberOfBeds });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.totalIncome = async (req, res) => {
+  try {
+    const totalIncome = await hospitalForm.aggregate([
+      { $match: { hospitalCode: req.hospitalCode } },
+      { $group: { _id: null, sum: { $sum: "$bedPrice" } } },
+    ]);
+    res.status(200).send({ income: totalIncome[0].sum });
   } catch (e) {
     res.status(500).send({ message: e.name });
   }
