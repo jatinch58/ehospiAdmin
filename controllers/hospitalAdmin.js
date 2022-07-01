@@ -1,6 +1,8 @@
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const AWS = require("aws-sdk");
+const { v4: uuidv4 } = require("uuid");
 const hospitalAdmindb = require("../models/hospitalAdmin");
 const hospitalSubAdmindb = require("../models/hospitalSubAdmin");
 const hospitalForm = require("../models/hospitalForm");
@@ -17,6 +19,11 @@ const adminDepartmentdb = require("../models/adminDepartment");
 const hospitalDepartmentdb = require("../models/hospitalDepartment");
 const hospitaldb = require("../models/hospital");
 const completeBookingdb = require("../models/completeBooking");
+const imagedb = require("../models/hospitalImage");
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ID,
+  secretAccessKey: process.env.AWS_SECRET,
+});
 exports.hospitalAdminLogin = async (req, res) => {
   try {
     const { body } = req;
@@ -1169,6 +1176,40 @@ exports.totalIncome = async (req, res) => {
       { $group: { _id: null, sum: { $sum: "$bedPrice" } } },
     ]);
     res.status(200).send({ income: totalIncome[0].sum });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.uploadPicture = async (req, res) => {
+  try {
+    let myFile = req.file.originalname.split(".");
+    const fileType = myFile[myFile.length - 1];
+
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `${uuidv4()}.${fileType}`,
+      Body: req.file.buffer,
+    };
+
+    s3.upload(params, async (error, data) => {
+      if (error) {
+        return res.status(500).send(error);
+      } else {
+        const saveTodb = await imagedb.findOneAndUpdate(
+          { hospitalCode: req.hospitalCode },
+          { $push: { imageUrl: String(data.Location) } },
+          {
+            upsert: true,
+            new: true,
+          }
+        );
+        if (saveTodb) {
+          res.status(200).send({ message: "image uploaded" });
+        } else {
+          res.status(500).send({ message: "Something bad happened" });
+        }
+      }
+    });
   } catch (e) {
     res.status(500).send({ message: e.name });
   }

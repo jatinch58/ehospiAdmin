@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require("../middlewares/auth");
 const hospitalAdmin = require("../controllers/hospitalAdmin");
 const { isHospitalAdmin } = require("../middlewares/isHospitalAdmin");
-
+const { upload } = require("../middlewares/fileUpload");
 router.post("/login/hospitalAdmin", hospitalAdmin.hospitalAdminLogin);
 router.get(
   "/isHospitalAdmin",
@@ -264,5 +264,12 @@ router.get(
   auth.verifyToken,
   isHospitalAdmin,
   hospitalAdmin.totalIncome
+);
+router.post(
+  "/hospitalAdmin/uploadPhoto",
+  auth.verifyToken,
+  isHospitalAdmin,
+  upload,
+  hospitalAdmin.uploadPicture
 );
 module.exports = router;
