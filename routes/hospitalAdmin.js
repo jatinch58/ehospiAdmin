@@ -278,4 +278,12 @@ router.delete(
   isHospitalAdmin,
   hospitalAdmin.deletePicture
 );
+router.get(
+  "/hospitalAdmin/getPicture",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.getPictures
+);
+router.post("/hospitalAdmin/addBedPhoto");
+router.delete("/hospitalAdmin/deleteBedPhoto");
 module.exports = router;

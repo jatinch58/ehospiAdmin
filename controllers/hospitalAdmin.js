@@ -1254,3 +1254,17 @@ exports.deletePicture = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
+exports.getPictures = async (req, res) => {
+  try {
+    const result = await imagedb.findOne({ hospitalCode: req.hospitalCode });
+    res.send({ data: result.imageUrl });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.addBedPhoto = async (req, res) => {
+  try {
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
