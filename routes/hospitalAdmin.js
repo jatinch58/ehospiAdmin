@@ -267,9 +267,15 @@ router.get(
 );
 router.post(
   "/hospitalAdmin/uploadPicture",
-
+  auth.verifyToken,
+  isHospitalAdmin,
   upload,
   hospitalAdmin.uploadPicture
 );
-router.delete("/hospitalAdmin/deletePicture", hospitalAdmin.deletePicture);
+router.delete(
+  "/hospitalAdmin/deletePicture",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.deletePicture
+);
 module.exports = router;

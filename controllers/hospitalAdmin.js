@@ -1197,7 +1197,7 @@ exports.uploadPicture = async (req, res) => {
         return res.status(500).send(error);
       } else {
         const saveTodb = await imagedb.findOneAndUpdate(
-          { hospitalCode: "Q9UDG3" },
+          { hospitalCode: req.hospitalCode },
           { $push: { imageUrl: String(data.Location) } },
           {
             upsert: true,
@@ -1235,7 +1235,7 @@ exports.deletePicture = async (req, res) => {
               if (err) res.status(500).send({ message: err });
               else {
                 const result = await imagedb.findOneAndUpdate(
-                  { hospitalCode: "Q9UDG3" },
+                  { hospitalCode: req.hospitalCode },
                   { $pull: { imageUrl: req.body.fileUrl } }
                 );
                 if (result) {
