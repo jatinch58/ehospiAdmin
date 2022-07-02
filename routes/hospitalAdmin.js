@@ -266,10 +266,10 @@ router.get(
   hospitalAdmin.totalIncome
 );
 router.post(
-  "/hospitalAdmin/uploadPhoto",
-  auth.verifyToken,
-  isHospitalAdmin,
+  "/hospitalAdmin/uploadPicture",
+
   upload,
   hospitalAdmin.uploadPicture
 );
+router.delete("/hospitalAdmin/deletePicture", hospitalAdmin.deletePicture);
 module.exports = router;

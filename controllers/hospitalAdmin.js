@@ -23,6 +23,7 @@ const imagedb = require("../models/hospitalImage");
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ID,
   secretAccessKey: process.env.AWS_SECRET,
+  Bucket: process.env.BUCKET_NAME,
 });
 exports.hospitalAdminLogin = async (req, res) => {
   try {
@@ -1196,7 +1197,7 @@ exports.uploadPicture = async (req, res) => {
         return res.status(500).send(error);
       } else {
         const saveTodb = await imagedb.findOneAndUpdate(
-          { hospitalCode: req.hospitalCode },
+          { hospitalCode: "Q9UDG3" },
           { $push: { imageUrl: String(data.Location) } },
           {
             upsert: true,
@@ -1210,6 +1211,45 @@ exports.uploadPicture = async (req, res) => {
         }
       }
     });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.deletePicture = async (req, res) => {
+  try {
+    let p = req.body.fileUrl;
+    p = p.split("/");
+    p = p[p.length - 1];
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: p,
+    };
+    const s3delete = function (params) {
+      return new Promise((resolve, reject) => {
+        s3.createBucket(
+          {
+            Bucket: params.Bucket,
+          },
+          function () {
+            s3.deleteObject(params, async function (err, data) {
+              if (err) res.status(500).send({ message: err });
+              else {
+                const result = await imagedb.findOneAndUpdate(
+                  { hospitalCode: "Q9UDG3" },
+                  { $pull: { imageUrl: req.body.fileUrl } }
+                );
+                if (result) {
+                  res.status(200).send({ message: "Deleted successfully" });
+                } else {
+                  res.status(500).send({ message: "Something bad happened" });
+                }
+              }
+            });
+          }
+        );
+      });
+    };
+    s3delete(params);
   } catch (e) {
     res.status(500).send({ message: e.name });
   }
