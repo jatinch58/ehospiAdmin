@@ -135,6 +135,7 @@ router.post(
   "/hospitalAdmin/addBedTypes",
   auth.verifyToken,
   isHospitalAdmin,
+  upload,
   hospitalAdmin.addBedTypes
 );
 

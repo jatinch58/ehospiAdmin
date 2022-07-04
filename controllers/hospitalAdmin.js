@@ -672,76 +672,6 @@ exports.deleteServices = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-exports.addBedTypes = async (req, res) => {
-  try {
-    const { body } = req;
-    const bedTypeSchema = Joi.object()
-      .keys({
-        bedName: Joi.string().required(),
-        facilities: Joi.array().required(),
-        amenities: Joi.array().required(),
-        facilitiesCharges: Joi.number().required(),
-        amenitiesCharges: Joi.number().required(),
-        bedCharges: Joi.number().required(),
-        totalCharges: Joi.number().required(),
-      })
-      .required();
-    let result = bedTypeSchema.validate(body);
-    if (result.error) {
-      res.status(403).send({ message: "Please enter valid details" });
-    } else {
-      const a = await myBedTypesdb.find({
-        hospitalCode: req.hospitalCode,
-      });
-      if (a.length == 0) {
-        const createBedTypes = new myBedTypesdb({
-          hospitalCode: req.hospitalCode,
-          beds: [
-            {
-              bedName: req.body.bedName,
-              facilities: req.body.facilities,
-              amenities: req.body.amenities,
-              charges: {
-                facilitiesCharges: req.body.facilitiesCharges,
-                amenitiesCharges: req.body.amenitiesCharges,
-                bedCharges: req.body.bedCharges,
-                totalCharges: req.body.totalCharges,
-              },
-            },
-          ],
-        });
-        await createBedTypes.save();
-        res.status(200).send({ message: "Done" });
-      } else {
-        const pusha = await myBedTypesdb.findOneAndUpdate(
-          { hospitalCode: req.hospitalCode },
-          {
-            $push: {
-              beds: {
-                bedName: req.body.bedName,
-                facilities: req.body.facilities,
-                amenities: req.body.amenities,
-                charges: {
-                  facilitiesCharges: req.body.facilitiesCharges,
-                  amenitiesCharges: req.body.amenitiesCharges,
-                  bedCharges: req.body.bedCharges,
-                  totalCharges: req.body.totalCharges,
-                },
-              },
-            },
-          }
-        );
-        if (pusha) {
-          res.status(200).send({ message: "New services pushed sucessfully" });
-        } else {
-          res.status(500).send({ message: "Something bad happened" });
-        }
-      }
-    }
-  } catch (e) {
-    res.status(500).send({ message: e.name });
-  }
-};
 
 exports.getBedTypes = async (req, res) => {
   try {
@@ -951,7 +881,6 @@ exports.getFullDepartment = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-
 exports.deleteDepartment = async (req, res) => {
   try {
     const a = await hospitalDepartmentdb.findOneAndUpdate(
@@ -1262,7 +1191,73 @@ exports.getPictures = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-exports.addBedPhoto = async (req, res) => {
+exports.addBedTypes = async (req, res) => {
+  try {
+    const { body } = req;
+    const bedTypeSchema = Joi.object()
+      .keys({
+        bedName: Joi.string().required(),
+        facilities: Joi.array().required(),
+        amenities: Joi.array().required(),
+        facilitiesCharges: Joi.number().required(),
+        amenitiesCharges: Joi.number().required(),
+        bedCharges: Joi.number().required(),
+        totalCharges: Joi.number().required(),
+      })
+      .required();
+    let result = bedTypeSchema.validate(body);
+    if (result.error) {
+      res.status(403).send({ message: result.error });
+    } else {
+      let myFile = req.file.originalname.split(".");
+      const fileType = myFile[myFile.length - 1];
+
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `${uuidv4()}.${fileType}`,
+        Body: req.file.buffer,
+      };
+
+      s3.upload(params, async (error, data) => {
+        if (error) {
+          return res.status(500).send(error);
+        } else {
+          const pusha = await myBedTypesdb.findOneAndUpdate(
+            { hospitalCode: req.hospitalCode },
+            {
+              $push: {
+                beds: {
+                  bedName: req.body.bedName,
+                  facilities: req.body.facilities,
+                  amenities: req.body.amenities,
+                  bedImages: [data.Location],
+                  charges: {
+                    facilitiesCharges: req.body.facilitiesCharges,
+                    amenitiesCharges: req.body.amenitiesCharges,
+                    bedCharges: req.body.bedCharges,
+                    totalCharges: req.body.totalCharges,
+                  },
+                },
+              },
+            },
+            {
+              upsert: true,
+              new: true,
+            }
+          );
+          if (pusha) {
+            res.status(200).send({ message: "New bed type added sucessfully" });
+          } else {
+            res.status(500).send({ message: "Something bad happened" });
+          }
+        }
+      });
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.addBedImages = async (req, res) => {
   try {
   } catch (e) {
     res.status(500).send({ message: e.name });
