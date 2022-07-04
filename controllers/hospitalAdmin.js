@@ -1246,7 +1246,9 @@ exports.addBedTypes = async (req, res) => {
             }
           );
           if (pusha) {
-            res.status(200).send({ message: "New bed type added sucessfully" });
+            res
+              .status(200)
+              .send({ message: "New bed type added successfully" });
           } else {
             res.status(500).send({ message: "Something bad happened" });
           }
@@ -1259,6 +1261,33 @@ exports.addBedTypes = async (req, res) => {
 };
 exports.addBedImages = async (req, res) => {
   try {
+    let myFile = req.file.originalname.split(".");
+    const fileType = myFile[myFile.length - 1];
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `${uuidv4()}.${fileType}`,
+      Body: req.file.buffer,
+    };
+
+    s3.upload(params, async (error, data) => {
+      if (error) {
+        return res.status(500).send(error);
+      } else {
+        const pusha = await myBedTypesdb.findOneAndUpdate(
+          { hospitalCode: req.hospitalCode, "beds._id": req.body.id },
+          {
+            $push: {
+              "beds.$.bedImages": data.Location,
+            },
+          }
+        );
+        if (pusha) {
+          res.status(200).send({ message: "New bed image added successfully" });
+        } else {
+          res.status(500).send({ message: "Something bad happened" });
+        }
+      }
+    });
   } catch (e) {
     res.status(500).send({ message: e.name });
   }

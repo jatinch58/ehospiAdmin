@@ -133,12 +133,18 @@ router.put(
 );
 router.post(
   "/hospitalAdmin/addBedTypes",
-  auth.verifyToken,
-  isHospitalAdmin,
+  // auth.verifyToken,
+  // isHospitalAdmin,
   upload,
   hospitalAdmin.addBedTypes
 );
-
+router.post(
+  "/hospitalAdmin/addBedImages",
+  // auth.verifyToken,
+  // isHospitalAdmin,
+  upload,
+  hospitalAdmin.addBedImages
+);
 router.get(
   "/hospitalAdmin/getBedTypes",
   auth.verifyToken,
