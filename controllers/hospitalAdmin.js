@@ -673,37 +673,6 @@ exports.deleteServices = async (req, res) => {
   }
 };
 
-exports.getBedTypes = async (req, res) => {
-  try {
-    const a = await myBedTypesdb.findOne({
-      hospitalCode: req.hospitalCode,
-    });
-    if (a) {
-      res.status(200).send(a.beds);
-    } else {
-      res.status(200).send({ message: "No beds found" });
-    }
-  } catch (e) {
-    res.status(500).send({ message: e.name });
-  }
-};
-exports.deleteBedTypes = async (req, res) => {
-  try {
-    const del = await myBedTypesdb.findOneAndUpdate(
-      { hospitalCode: req.hospitalCode },
-      {
-        $pull: { beds: { _id: req.params.id } },
-      }
-    );
-    if (del) {
-      res.status(200).send({ message: "Deleted sucessfully" });
-    } else {
-      res.status(404).send({ message: "Id not found" });
-    }
-  } catch (e) {
-    res.status(500).send({ message: e.name });
-  }
-};
 exports.getInsurance = async (req, res) => {
   try {
     const a = await hospitalInsurancedb.findOne({
@@ -1223,7 +1192,7 @@ exports.addBedTypes = async (req, res) => {
           return res.status(500).send(error);
         } else {
           const pusha = await myBedTypesdb.findOneAndUpdate(
-            { hospitalCode: "Q9UDG2" },
+            { hospitalCode: req.hospitalCode },
             {
               $push: {
                 beds: {
@@ -1274,7 +1243,7 @@ exports.addBedImages = async (req, res) => {
         return res.status(500).send(error);
       } else {
         const pusha = await myBedTypesdb.findOneAndUpdate(
-          { hospitalCode: "Q9UDG2", "beds._id": req.body.id },
+          { hospitalCode: req.hospitalCode, "beds._id": req.body.id },
           {
             $push: {
               "beds.$.bedImages": data.Location,
@@ -1296,7 +1265,7 @@ exports.getBedImages = async (req, res) => {
   try {
     const result = await myBedTypesdb.findOne(
       {
-        hospitalCode: "Q9UDG2",
+        hospitalCode: req.hospitalCode,
         beds: { $elemMatch: { _id: req.params.id } },
       },
       { "beds.$": 1 }
@@ -1326,7 +1295,7 @@ exports.deleteBedImages = async (req, res) => {
               if (err) res.status(500).send({ message: err });
               else {
                 const result = await myBedTypesdb.findOneAndUpdate(
-                  { hospitalCode: "Q9UDG2", "beds._id": req.body.id },
+                  { hospitalCode: req.hospitalCode, "beds._id": req.body.id },
                   { $pull: { "beds.$.bedImages": req.body.fileUrl } }
                 );
                 if (result) {
@@ -1341,6 +1310,65 @@ exports.deleteBedImages = async (req, res) => {
       });
     };
     s3delete(params);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+
+exports.getBedTypes = async (req, res) => {
+  try {
+    const a = await myBedTypesdb.findOne({
+      hospitalCode: req.hospitalCode,
+    });
+    if (a) {
+      res.status(200).send(a.beds);
+    } else {
+      res.status(200).send({ message: "No beds found" });
+    }
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.deleteBedTypes = async (req, res) => {
+  try {
+    const result = await myBedTypesdb.findOne(
+      {
+        hospitalCode: req.hospitalCode,
+        beds: { $elemMatch: { _id: req.params.id } },
+      },
+      { "beds.$": 1 }
+    );
+    const objectKeys = result.beds[0].bedImages;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Delete: {
+        Objects: [],
+      },
+    };
+    objectKeys.forEach((objectKey) => {
+      let p = objectKey.split("/");
+      p = p[p.length - 1];
+      return params.Delete.Objects.push({
+        Key: p,
+      });
+    });
+    s3.deleteObjects(params, async function (err, data) {
+      if (err) {
+        res.status(404).send({ message: "Something bad happenned" });
+      } else {
+        const del = await myBedTypesdb.findOneAndUpdate(
+          { hospitalCode: req.hospitalCode },
+          {
+            $pull: { beds: { _id: req.params.id } },
+          }
+        );
+        if (del) {
+          res.status(200).send({ message: "Deleted sucessfully" });
+        } else {
+          res.status(404).send({ message: "Id not found" });
+        }
+      }
+    });
   } catch (e) {
     res.status(500).send({ message: e.name });
   }

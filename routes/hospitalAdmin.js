@@ -163,7 +163,7 @@ router.get(
   isHospitalAdmin,
   hospitalAdmin.getBedTypes
 );
-router.put(
+router.delete(
   "/hospitalAdmin/deleteBedTypes/:id",
   auth.verifyToken,
   isHospitalAdmin,
