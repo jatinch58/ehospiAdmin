@@ -145,6 +145,18 @@ router.post(
   upload,
   hospitalAdmin.addBedImages
 );
+router.delete(
+  "/hospitalAdmin/deleteBedImages",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.deleteBedImages
+);
+router.get(
+  "/hospitalAdmin/getBedImages/:id",
+  auth.verifyToken,
+  isHospitalAdmin,
+  hospitalAdmin.getBedImages
+);
 router.get(
   "/hospitalAdmin/getBedTypes",
   auth.verifyToken,

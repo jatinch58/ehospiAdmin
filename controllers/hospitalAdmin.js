@@ -1223,7 +1223,7 @@ exports.addBedTypes = async (req, res) => {
           return res.status(500).send(error);
         } else {
           const pusha = await myBedTypesdb.findOneAndUpdate(
-            { hospitalCode: req.hospitalCode },
+            { hospitalCode: "Q9UDG2" },
             {
               $push: {
                 beds: {
@@ -1274,7 +1274,7 @@ exports.addBedImages = async (req, res) => {
         return res.status(500).send(error);
       } else {
         const pusha = await myBedTypesdb.findOneAndUpdate(
-          { hospitalCode: req.hospitalCode, "beds._id": req.body.id },
+          { hospitalCode: "Q9UDG2", "beds._id": req.body.id },
           {
             $push: {
               "beds.$.bedImages": data.Location,
@@ -1288,6 +1288,59 @@ exports.addBedImages = async (req, res) => {
         }
       }
     });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.getBedImages = async (req, res) => {
+  try {
+    const result = await myBedTypesdb.findOne(
+      {
+        hospitalCode: "Q9UDG2",
+        beds: { $elemMatch: { _id: req.params.id } },
+      },
+      { "beds.$": 1 }
+    );
+    res.send({ images: result.beds[0].bedImages });
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.deleteBedImages = async (req, res) => {
+  try {
+    let p = req.body.fileUrl;
+    p = p.split("/");
+    p = p[p.length - 1];
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: p,
+    };
+    const s3delete = function (params) {
+      return new Promise((resolve, reject) => {
+        s3.createBucket(
+          {
+            Bucket: params.Bucket,
+          },
+          function () {
+            s3.deleteObject(params, async function (err, data) {
+              if (err) res.status(500).send({ message: err });
+              else {
+                const result = await myBedTypesdb.findOneAndUpdate(
+                  { hospitalCode: "Q9UDG2", "beds._id": req.body.id },
+                  { $pull: { "beds.$.bedImages": req.body.fileUrl } }
+                );
+                if (result) {
+                  res.status(200).send({ message: "Deleted successfully" });
+                } else {
+                  res.status(500).send({ message: "Something bad happened" });
+                }
+              }
+            });
+          }
+        );
+      });
+    };
+    s3delete(params);
   } catch (e) {
     res.status(500).send({ message: e.name });
   }
