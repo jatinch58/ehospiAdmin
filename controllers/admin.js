@@ -945,6 +945,15 @@ exports.getHospitalDetails = async (req, res) => {
     res.status(500).send({ message: err.name });
   }
 };
+exports.getHospitalCount = async (req, res) => {
+  try {
+    const numberOfHospitals = await hospitaldb.find().count();
+    const numberofBookings = await hospitalForm.find().count();
+    res.status(200).send({ numberOfHospitals, numberofBookings });
+  } catch (e) {
+    res.status(500).send({ message: err.name });
+  }
+};
 ////////////////////////////////////////////////
 // exports.signup = async (req, res) => {
 //   try {

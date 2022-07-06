@@ -203,4 +203,10 @@ router.get(
   isAdmin,
   admin.getHospitalDetails
 );
+router.get(
+  "/admin/hospitalCount",
+  auth.verifyToken,
+  isAdmin,
+  admin.getHospitalCount
+);
 module.exports = router;
