@@ -943,19 +943,17 @@ exports.getHospitalDetails = async (req, res) => {
     const result3 = await hospitalImagesdb.findOne({
       hospitalCode: req.params.hospitalCode,
     });
-    if (!result && !result2) {
+    if (!result && !result2 && !result3) {
       res.status(404).send({
         message:
           "No hospital found of hospital code: " + req.params.hospitalCode,
       });
     } else {
-      res
-        .status(200)
-        .send({
-          hospitalDetails: result,
-          bedDetails: result2,
-          hospitalImages: result3,
-        });
+      res.status(200).send({
+        hospitalDetails: result,
+        bedDetails: result2,
+        hospitalImages: result3,
+      });
     }
   } catch (err) {
     res.status(500).send({ message: err.name });
