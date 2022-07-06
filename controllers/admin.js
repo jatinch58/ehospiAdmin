@@ -940,7 +940,7 @@ exports.getHospitalDetails = async (req, res) => {
       },
       { _id: 0, __v: 0 }
     );
-    const result3 = await hospitalImagesdb.findOne({
+    const result3 = await hospitalImagedb.findOne({
       hospitalCode: req.params.hospitalCode,
     });
     if (!result && !result2 && !result3) {
