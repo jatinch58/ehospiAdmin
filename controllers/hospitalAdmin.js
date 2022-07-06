@@ -673,7 +673,6 @@ exports.deleteServices = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-
 exports.getInsurance = async (req, res) => {
   try {
     const a = await hospitalInsurancedb.findOne({
@@ -1321,7 +1320,6 @@ exports.deleteBedImages = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-
 exports.getBedTypes = async (req, res) => {
   try {
     const a = await myBedTypesdb.findOne({

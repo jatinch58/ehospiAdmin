@@ -33,9 +33,5 @@ const signupHospitalSchema = new Schema({
     type: String,
     required: true,
   },
-  numberOfBeds: {
-    type: Number,
-    required: true,
-  },
 });
 module.exports = mongoose.model("signupHospital", signupHospitalSchema);
