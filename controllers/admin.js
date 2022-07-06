@@ -16,6 +16,7 @@ const signupHospitaldb = require("../models/signupHospital");
 const insurancedb = require("../models/insurance");
 const departmentdb = require("../models/adminDepartment");
 const bedTypes = require("../models/bedTypes");
+const hospitalImagedb = require("../models/hospitalImage");
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ID,
   secretAccessKey: process.env.AWS_SECRET,
@@ -939,13 +940,22 @@ exports.getHospitalDetails = async (req, res) => {
       },
       { _id: 0, __v: 0 }
     );
+    const result3 = await hospitalImagesdb.findOne({
+      hospitalCode: req.params.hospitalCode,
+    });
     if (!result && !result2) {
       res.status(404).send({
         message:
           "No hospital found of hospital code: " + req.params.hospitalCode,
       });
     } else {
-      res.status(200).send({ hospitalDetails: result, bedDetails: result2 });
+      res
+        .status(200)
+        .send({
+          hospitalDetails: result,
+          bedDetails: result2,
+          hospitalImages: result3,
+        });
     }
   } catch (err) {
     res.status(500).send({ message: err.name });
