@@ -14,6 +14,7 @@ const Services = require("../models/services");
 const signupHospitaldb = require("../models/signupHospital");
 const insurancedb = require("../models/insurance");
 const departmentdb = require("../models/adminDepartment");
+const bedTypes = require("../models/bedTypes");
 exports.adminLogin = async (req, res) => {
   try {
     const { body } = req;
@@ -918,7 +919,32 @@ exports.getHospital = async (req, res) => {
     res.status(500).send({ message: err.name });
   }
 };
-
+exports.getHospitalDetails = async (req, res) => {
+  try {
+    const result = await hospitaldb.findOne(
+      {
+        hospitalCode: req.params.hospitalCode,
+      },
+      { _id: 0, __v: 0 }
+    );
+    const result2 = await bedTypes.findOne(
+      {
+        hospitalCode: req.params.hospitalCode,
+      },
+      { _id: 0, __v: 0 }
+    );
+    if (!result || !result2) {
+      res.status(404).send({
+        message:
+          "No hospital found of hospital code: " + req.params.hospitalCode,
+      });
+    } else {
+      res.status(200).send({ hospitalDetails: result, bedDetails: result2 });
+    }
+  } catch (err) {
+    res.status(500).send({ message: err.name });
+  }
+};
 ////////////////////////////////////////////////
 // exports.signup = async (req, res) => {
 //   try {

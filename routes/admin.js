@@ -197,4 +197,10 @@ router.delete(
 );
 router.post("/addHospital", auth.verifyToken, isAdmin, admin.addHospital);
 router.get("/getHospital", auth.verifyToken, isAdmin, admin.getHospital);
+router.get(
+  "/admin/hospitalDetails/:hospitalCode",
+  auth.verifyToken,
+  isAdmin,
+  admin.getHospitalDetails
+);
 module.exports = router;
