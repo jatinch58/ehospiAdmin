@@ -20,6 +20,7 @@ const hospitalDepartmentdb = require("../models/hospitalDepartment");
 const hospitaldb = require("../models/hospital");
 const completeBookingdb = require("../models/completeBooking");
 const imagedb = require("../models/hospitalImage");
+const bedTypes = require("../models/bedTypes");
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ID,
   secretAccessKey: process.env.AWS_SECRET,
@@ -1060,10 +1061,14 @@ exports.getTotalPatients = async (req, res) => {
 };
 exports.getTotalBeds = async (req, res) => {
   try {
-    const totalBeds = await hospitaldb.findOne({
+    const totalBeds = await bedTypes.findOne({
       hospitalCode: req.hospitalCode,
     });
-    res.status(200).send({ beds: totalBeds.numberOfBeds });
+    let count = 0;
+    totalBeds.beds.map((val) => {
+      count += val.numberOfBeds;
+    });
+    res.status(200).send({ beds: count });
   } catch (e) {
     res.status(500).send({ message: e.name });
   }
