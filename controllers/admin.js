@@ -939,7 +939,7 @@ exports.getHospitalDetails = async (req, res) => {
       },
       { _id: 0, __v: 0 }
     );
-    if (!result || !result2) {
+    if (!result && !result2) {
       res.status(404).send({
         message:
           "No hospital found of hospital code: " + req.params.hospitalCode,
