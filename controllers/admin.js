@@ -548,7 +548,6 @@ exports.updateRejectSignupHosRequests = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-
 exports.showAllUsers = async (req, res) => {
   try {
     const allUsers = await userdb.find();
@@ -726,7 +725,6 @@ exports.deleteServices = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
-
 exports.updateAcceptBedTypes = async (req, res) => {
   try {
     const bedTypes = await bedTypedb.findOneAndUpdate(
@@ -758,7 +756,6 @@ exports.updateRejectBedTypes = async (req, res) => {
     res.send(e.name);
   }
 };
-
 exports.addInsurance = async (req, res) => {
   try {
     const { body } = req;

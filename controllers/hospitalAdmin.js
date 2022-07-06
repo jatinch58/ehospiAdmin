@@ -1172,6 +1172,7 @@ exports.addBedTypes = async (req, res) => {
         amenitiesCharges: Joi.number().required(),
         bedCharges: Joi.number().required(),
         totalCharges: Joi.number().required(),
+        numberOfBeds: Joi.number().required(),
       })
       .required();
     let result = bedTypeSchema.validate(body);
@@ -1206,6 +1207,7 @@ exports.addBedTypes = async (req, res) => {
                     bedCharges: req.body.bedCharges,
                     totalCharges: req.body.totalCharges,
                   },
+                  numberOfBeds: req.body.numberOfBeds,
                 },
               },
             },
