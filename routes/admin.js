@@ -209,4 +209,10 @@ router.get(
   isAdmin,
   admin.getHospitalCount
 );
+router.delete(
+  "/admin/deleteBedImages",
+  auth.verifyToken,
+  isAdmin,
+  admin.deleteHospitalImages
+);
 module.exports = router;
