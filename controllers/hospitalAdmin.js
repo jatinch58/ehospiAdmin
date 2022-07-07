@@ -49,7 +49,7 @@ exports.hospitalAdminLogin = async (req, res) => {
         if (validPassword) {
           const token = jwt.sign(
             { uid: user.uid, password: user.password },
-            "123456",
+            process.env.TOKEN_KEY,
             {
               expiresIn: "24h",
             }

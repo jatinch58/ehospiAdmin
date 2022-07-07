@@ -10,11 +10,9 @@ app.use(express.json());
 app.use(allRoutes);
 async function main() {
   try {
-    await mongoose.connect(
-      "mongodb+srv://kickr:bzMgnSGQaNhxWlrh@cluster0.hizynpg.mongodb.net/ehospi?retryWrites=true&w=majority"
-    );
-
-    console.log("Database connected sucessfully");
+    mongoose.connect(process.env.MONGO_URL).then(() => {
+      console.log("Database connected sucessfully");
+    });
   } catch (error) {
     console.log(error);
   }

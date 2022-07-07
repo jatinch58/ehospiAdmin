@@ -24,7 +24,7 @@ exports.hospitalSubAdminLogin = async (req, res) => {
           user.password
         );
         if (validPassword) {
-          const token = jwt.sign({ uid: user.uid }, "123456", {
+          const token = jwt.sign({ uid: user.uid }, process.env.TOKEN_KEY, {
             expiresIn: "24h",
           });
           res.send({ token: token });
