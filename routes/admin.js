@@ -215,4 +215,17 @@ router.delete(
   isAdmin,
   admin.deleteHospitalImages
 );
+router.get("/admin/totalBeds", auth.verifyToken, isAdmin, admin.getTotalBeds);
+router.get(
+  "/admin/totalPatients",
+  auth.verifyToken,
+  isAdmin,
+  admin.getTotalPatients
+);
+router.get(
+  "/admin/totalEarning",
+  auth.verifyToken,
+  isAdmin,
+  admin.getTotalEarning
+);
 module.exports = router;

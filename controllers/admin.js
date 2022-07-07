@@ -962,9 +962,8 @@ exports.getHospitalDetails = async (req, res) => {
 exports.getHospitalCount = async (req, res) => {
   try {
     const numberOfHospitals = await hospitaldb.find().count();
-    const numberofBookings = await hospitalForm.find().count();
-    res.status(200).send({ numberOfHospitals, numberofBookings });
-  } catch (e) {
+    res.status(200).send({ result: numberOfHospitals });
+  } catch (err) {
     res.status(500).send({ message: err.name });
   }
 };
@@ -1003,8 +1002,45 @@ exports.deleteHospitalImages = async (req, res) => {
       });
     };
     s3delete(params);
-  } catch (e) {
+  } catch (err) {
     res.status(500).send({ message: err.name });
+  }
+};
+exports.getTotalBeds = async (req, res) => {
+  try {
+    let count = 0;
+    const result = await bedTypes.find({}, { "beds.numberOfBeds": 1, _id: 0 });
+    result.map((val) => {
+      val.beds.map((n) => {
+        count += n.numberOfBeds;
+      });
+    });
+    res.send({ result: count });
+  } catch (err) {
+    res.status(500).send({ message: err.name });
+  }
+};
+exports.getTotalPatients = async (req, res) => {
+  try {
+    const result = await hospitalForm.find({}).count();
+    res.send({ result: result });
+  } catch (err) {
+    res.status(500).send({ message: err.name });
+  }
+};
+exports.getTotalEarning = async (req, res) => {
+  try {
+    const result = await hospitalForm.aggregate([
+      {
+        $group: {
+          _id: "$bookingStatus",
+          totalEarning: { $sum: "$bedPrice" },
+        },
+      },
+    ]);
+    res.send({ result: result });
+  } catch (err) {
+    res.status(500).send({ err });
   }
 };
 ////////////////////////////////////////////////
