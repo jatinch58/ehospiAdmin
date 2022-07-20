@@ -1043,6 +1043,60 @@ exports.getTotalEarning = async (req, res) => {
     res.status(500).send({ err });
   }
 };
+//============================ hospital wise ===============================================//
+exports.getBookingRequests1 = async (req, res) => {
+  try {
+    const allHospitalRequests = await hospitalForm.find(
+      { hospitalCode: req.params.hospitalCode },
+      { _id: 0, __v: 0 }
+    );
+    res.status(200).send(allHospitalRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.pendingBookingRequests1 = async (req, res) => {
+  try {
+    const allHospitalPendingRequests = await hospitalForm.find(
+      {
+        bookingStatus: "pending",
+        hospitalCode: req.params.hospitalCode,
+      },
+      { _id: 0, __v: 0 }
+    );
+    res.status(200).send(allHospitalPendingRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.adminAcceptedBookingRequests1 = async (req, res) => {
+  try {
+    const allHospitalAcceptedRequests = await hospitalForm.find(
+      {
+        bookingStatus: "accepted",
+        hospitalCode: req.params.hospitalCode,
+      },
+      { _id: 0, __v: 0 }
+    );
+    res.status(200).send(allHospitalAcceptedRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.adminRejectedBookingRequests1 = async (req, res) => {
+  try {
+    const allHospitalRejectedRequests = await hospitalForm.find(
+      {
+        bookingStatus: "rejected",
+        hospitalCode: req.params.hospitalCode,
+      },
+      { _id: 0, __v: 0 }
+    );
+    res.status(200).send(allHospitalRejectedRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
 ////////////////////////////////////////////////
 // exports.signup = async (req, res) => {
 //   try {

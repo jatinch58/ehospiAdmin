@@ -59,7 +59,11 @@ exports.hospitalAdminLogin = async (req, res) => {
           });
           res
             .status(200)
-            .send({ token: token, hospitalName: hospitalName.hospitalName });
+            .send({
+              token: token,
+              hospitalName: hospitalName.hospitalName,
+              uid: req.body.uid,
+            });
         } else {
           res.status(401).send("Invalid password");
         }

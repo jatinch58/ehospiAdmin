@@ -228,4 +228,29 @@ router.get(
   isAdmin,
   admin.getTotalEarning
 );
+//================================= hospital wise =====================================//
+router.get(
+  "/admin/bookingRequest/:hospitalCode",
+  auth.verifyToken,
+  isAdmin,
+  admin.getBookingRequests1
+);
+router.get(
+  "/admin/pendingBooking/:hospitalCode",
+  auth.verifyToken,
+  isAdmin,
+  admin.pendingBookingRequests1
+);
+router.get(
+  "/admin/acceptedBooking/:hospitalCode",
+  auth.verifyToken,
+  isAdmin,
+  admin.adminAcceptedBookingRequests1
+);
+router.get(
+  "/admin/rejectedBooking/:hospitalCode",
+  auth.verifyToken,
+  isAdmin,
+  admin.adminRejectedBookingRequests1
+);
 module.exports = router;
