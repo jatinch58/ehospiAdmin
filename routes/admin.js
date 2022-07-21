@@ -98,6 +98,12 @@ router.get(
   admin.adminAcceptedBookingRequests
 );
 router.get(
+  "/admin/getCompletedBooking",
+  auth.verifyToken,
+  isAdmin,
+  admin.adminCompletedBookingRequests
+);
+router.get(
   "/admin/getRejectedBookingRequests",
   auth.verifyToken,
   isAdmin,
@@ -236,7 +242,7 @@ router.get(
   admin.getBookingRequests1
 );
 router.get(
-  "/admin/pendingBooking/:hospitalCode",
+  "/admin/pendingBookingRequest/:hospitalCode",
   auth.verifyToken,
   isAdmin,
   admin.pendingBookingRequests1
@@ -252,5 +258,11 @@ router.get(
   auth.verifyToken,
   isAdmin,
   admin.adminRejectedBookingRequests1
+);
+router.get(
+  "/admin/completedBooking/:hospitalCode",
+  auth.verifyToken,
+  isAdmin,
+  admin.adminCompletedBooking1
 );
 module.exports = router;

@@ -459,6 +459,19 @@ exports.adminRejectedBookingRequests = async (req, res) => {
     res.status(500).send({ message: e.name });
   }
 };
+exports.adminCompletedBookingRequests = async (req, res) => {
+  try {
+    const allHospitalCompletedRequests = await hospitalForm.find(
+      {
+        bookingStatus: "completed",
+      },
+      { _id: 0, __v: 0 }
+    );
+    res.status(200).send(allHospitalCompletedRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
 exports.adminRejectedPendingBookingRequests = async (req, res) => {
   try {
     const allHospitalAcceptedRequests = await signupHospitaldb.findOneAndUpdate(
@@ -1093,6 +1106,20 @@ exports.adminRejectedBookingRequests1 = async (req, res) => {
       { _id: 0, __v: 0 }
     );
     res.status(200).send(allHospitalRejectedRequests);
+  } catch (e) {
+    res.status(500).send({ message: e.name });
+  }
+};
+exports.adminCompletedBooking1 = async (req, res) => {
+  try {
+    const completedBookings = await hospitalForm.find(
+      {
+        bookingStatus: "completed",
+        hospitalCode: req.params.hospitalCode,
+      },
+      { _id: 0, __v: 0 }
+    );
+    res.status(200).send(completedBookings);
   } catch (e) {
     res.status(500).send({ message: e.name });
   }
