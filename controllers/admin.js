@@ -907,7 +907,6 @@ exports.addHospital = async (req, res) => {
         city: Joi.string().required(),
         state: Joi.string().required(),
         phone: Joi.string().required(),
-        numberOfBeds: Joi.number().required(),
       })
       .required();
     let result = hospitalSchema.validate(body);
@@ -922,7 +921,6 @@ exports.addHospital = async (req, res) => {
         city: req.body.city,
         state: req.body.state,
         phone: req.body.phone,
-        numberOfBeds: req.body.numberOfBeds,
       });
       await createHospital.save();
       res.status(200).send({ message: "Added hospital sucessfully" });
