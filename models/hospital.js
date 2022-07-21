@@ -29,12 +29,5 @@ const hospitalSchema = new Schema({
     type: String,
     required: true,
   },
-  numberOfBeds: {
-    type: Number,
-    required: true,
-  },
-  vacantBeds: {
-    type: Number,
-  },
 });
 module.exports = mongoose.model("Hospital", hospitalSchema);
